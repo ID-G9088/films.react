@@ -17,7 +17,6 @@ const Film = (props) => {
   };
 
   const { film, showDetails } = props;
-  console.log(film.characters);
 
   return (
     <li>

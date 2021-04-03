@@ -7,10 +7,8 @@ const Characters = (props) => {
   const [isLoading, setLoading] = useState(true);
 
   const { characters } = props;
-  console.log(characters);
 
   useEffect(() => {
-    console.log(characters);
     const request = characters.map((el) => axios(el));
     Promise.all(request).then((res) => {
       console.log(res);
