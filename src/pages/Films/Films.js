@@ -1,18 +1,27 @@
 import axios from "axios";
-import React, { Component, useState, useEffect } from "react";
+import React from "react";
+import Loading from "../../components/Loading/Loading";
+import { useEffect } from "react";
+import { useState } from "react";
+import Film from "../../components/Film/Film";
 import { connect } from "react-redux";
-import Film from "../../Components/Film/Film";
-import Loading from "../../Components/Loading/Loading";
-import "./Films.scss";
+import { setFilms, setFilmsLoading } from "../../store/actions";
+import { getFilms } from "../../store/selectors";
+import {getFilmsData} from '../../store/operations'
 
 const Films = (props) => {
-  const { films } = props;
-  console.log(films);
+  useEffect(() => {
+    if (props.films.length === 0) {
+      props.getFilmsData()
+    }
+  }, []);
 
+  if (props.isLoading) {
+    return <Loading />;
+  }
   return (
     <ol>
-      {films.map((el) => {
-        console.log(el);
+      {props.films.map((el) => {
         return <Film key={el.id} film={el} />;
       })}
     </ol>
@@ -22,7 +31,14 @@ const Films = (props) => {
 const mapStateToProps = (state) => {
   return {
     films: state.films.data,
+    isLoading: state.films.isLoading,
   };
 };
 
-export default connect(mapStateToProps)(Films);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getFilmsData: () => dispatch(getFilmsData())
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Films);

@@ -1,62 +1,43 @@
+import React from "react";
+import Film from "../../components/Film/Film";
+import Loading from "../../components/Loading/Loading";
+import { useState } from "react";
+import { useEffect } from "react";
 import axios from "axios";
-import React, { Component, useEffect, useState } from "react";
-import Loading from "../../Components/Loading/Loading";
-import { useHistory, useParams, withRouter } from "react-router-dom";
-import Film from "../../Components/Film/Film";
-import { connect } from "react-redux";
+import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { getFilm, getFilms, getFilmLoading } from "../../store/selectors";
+import { useDispatch } from "react-redux";
+import { setFilm, setFilmLoading } from "../../store/actions";
+import { getFilmData } from "../../store/operations";
 
-const FilmDetails = (props) => {
-  // const [film, setFilm] = useState([]);
-  // const [isLoading, setLoading] = useState(true);
-
-  const { films, film, setFilmLoading, setFilm } = props;
-
+const FilmDetails = () => {
+  // const [film, setFilm] = useState(null)
+  // const [isLoading, setLoading] = useState(true)
+  const film = useSelector(getFilm);
+  const films = useSelector(getFilms);
+  const isLoading = useSelector(getFilmLoading);
+  const dispatch = useDispatch();
   const params = useParams();
 
   useEffect(() => {
-    if (films.data.some((el) => Number(el.id) === Number(params.filmId))) {
-      const film = films.data.find((el) => Number(el.id) === Number(params.filmId));
-      console.log(film);
-      setFilm(film);
-      setFilmLoading(false);
+    if (films.length > 0) {
+      const currentFilm = films.find((el) => String(el.id) === params.filmId);
+      dispatch(setFilm(currentFilm));
+      dispatch(setFilmLoading(false));
     } else {
-      axios(`https://ajax.test-danit.com/api/swapi/films/${params.filmId}`).then((response) => {
-        console.log(response);
-        setFilm(response.data);
-        setFilmLoading(false);
-      });
+      dispatch(getFilmData(params.filmId))
     }
   }, []);
 
-  if (film.isLoading) {
+  if (isLoading) {
     return <Loading />;
   }
-
   return (
     <div>
-      <Film showDetails />
+      <Film showDetails film={film} />
     </div>
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    films: {
-      data: state.films.data,
-      isLoading: state.films.isLoading,
-    },
-    film: {
-      data: state.film.data,
-      isLoading: state.film.isLoading,
-    },
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setFilmLoading: (data) => dispatch({ type: "SET_FILM_LOADING", payload: data }),
-    setFilm: (data) => dispatch({ type: "SET_FILM", payload: data }),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(FilmDetails);
+export default FilmDetails;

@@ -1,14 +1,19 @@
 import axios from "axios";
+import { setFilm, setFilmLoading, setFilms, setFilmsLoading } from "./actions";
 
-const getFilms = () => (dispatch) => {
-  axios("https://ajax.test-danit.com/api/swapi/films").then((response) => {
-    dispatch.setFilms(response.data);
-    dispatch.setFilmsLoading(false);
+export const getFilmsData = () => (dispatch) => {
+  axios("https://ajax.test-danit.com/api/swapi/films")
+    .then((res) => {
+        dispatch(setFilms(res.data));
+        dispatch(setFilmsLoading(false));
+      });
+}
+
+export const getFilmData = (id) => (dispatch) => {
+  axios(
+    `https://ajax.test-danit.com/api/swapi/films/${id}`
+  ).then((res) => {
+    dispatch(setFilm(res.data));
+    dispatch(setFilmLoading(false));
   });
-  const userLocalStorage = JSON.parse(localStorage.getItem("user"));
-  if (userLocalStorage) {
-    dispatch.setUser(userLocalStorage);
-  }
-};
-
-export default getFilms;
+}

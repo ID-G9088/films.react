@@ -1,58 +1,49 @@
 import "./App.css";
 import AppRoutes from "./routes/AppRoutes";
-import { useState, useEffect } from "react";
-import Loading from "./Components/Loading/Loading";
-import axios from "axios";
-import Header from "./Components/Header/Header";
+import { useEffect } from "react";
 import { connect } from "react-redux";
-import { setUser } from "./store/actions";
-import { logRoles } from "@testing-library/react";
+import { setUser, setUserLoading } from "./store/actions";
 
 const App = (props) => {
-  // const [films, setFilms] = useState([]);
-  // const [isLoading, setLoading] = useState(true);
-  // const [user, setUser] = useState(null);
-
-  const { user, setFilms, setFilmsLoading, setUser, films, isLoading } = props;
-  console.log(props);
+  const logOut = () => {
+    props.setUser(null);
+    localStorage.removeItem("user");
+  };
 
   useEffect(() => {
-    axios("https://ajax.test-danit.com/api/swapi/films").then((response) => {
-      setFilms(response.data);
-      setFilmsLoading(false);
-    });
     const userLocalStorage = JSON.parse(localStorage.getItem("user"));
     if (userLocalStorage) {
-      setUser(userLocalStorage);
+      props.setUser(userLocalStorage);
     }
+    props.setUserLoading(false)
   }, []);
 
-  if (isLoading) {
-    return <Loading />;
+  const { user, userLoading } = props;
+
+
+  if (userLoading) {
+    return 'Loading...'
   }
 
   return (
     <div className="App">
-      <Header />
       <AppRoutes />
+      {user && <button onClick={logOut}>Log out</button>}
     </div>
   );
 };
 
 const mapStateToProps = (state) => {
   return {
-    user: state.user,
-    films: state.films.data,
-    isLoading: state.films.isLoading,
+    user: state.user.data,
+    userLoading: state.user.isLoading
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     setUser: (data) => dispatch(setUser(data)),
-    setFilmsLoading: (data) => dispatch({ type: "SET_FILMS_LOADING", payload: data }),
-    setFilms: (data) => dispatch({ type: "SET_FILMS", payload: data }),
+    setUserLoading: (data) => dispatch(setUserLoading(data))
   };
 };
-
 export default connect(mapStateToProps, mapDispatchToProps)(App);

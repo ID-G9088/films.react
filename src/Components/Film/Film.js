@@ -1,15 +1,15 @@
-import React from "react";
-import { connect } from "react-redux";
-import { useHistory } from "react-router-dom";
+import React, { Component, useState } from "react";
 import Characters from "../Characters/Characters";
+import { useHistory } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { DELETE_FILM } from "../../store/types";
 
 const Film = (props) => {
   const history = useHistory();
+  const films = useSelector((state) => state.films.data);
+  const dispatch = useDispatch();
 
-  const { film, showDetails } = props;
-  console.log(film);
-
-  const goToDetalis = () => {
+  const goToDetails = () => {
     const {
       film: { id },
     } = props;
@@ -20,24 +20,26 @@ const Film = (props) => {
     history.goBack();
   };
 
-  const deleteFilm = () => {
-    console.log(22);
+  const deleteFilm = (id) => {
+    dispatch({ type: DELETE_FILM, payload: id });
   };
 
+  const { film, showDetails } = props;
   return (
     <li>
-      <span>
-        {film.name} <button onClick={deleteFilm}>X</button>
-      </span>
-      {!showDetails && <button onClick={goToDetalis}> MORE</button>}
+      <span>{film.name}</span>
+      {!showDetails && <button onClick={goToDetails}>Details</button>}
       {showDetails && (
         <>
+          <button onClick={goBack}>Go back</button>
           <div>{film.episodeId}</div>
           <div>{film.openingCrawl}</div>
           <Characters characters={film.characters} />
-          <button onClick={goBack}>GO BACK</button>
         </>
       )}
+      <button onClick={deleteFilm.bind(null, film.id)} style={{ marginLeft: "5px" }}>
+        X
+      </button>
     </li>
   );
 };
@@ -45,8 +47,4 @@ const Film = (props) => {
 Film.defaultProps = {
   showDetails: false,
 };
-
-const mapStateToProps = (state) => {
-  return { films: state.films.data };
-};
-export default connect(mapStateToProps)(Film);
+export default Film;
