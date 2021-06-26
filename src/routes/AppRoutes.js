@@ -4,10 +4,11 @@ import Page404 from "../Components/Page404/Page404";
 import Films from "../pages/Films/Films";
 import FilmDetails from "../pages/FilmDetails/FilmDetails";
 import Login from "../pages/Login/Login";
+import { useSelector } from "react-redux";
+import { getUser } from "../store/selectors";
 
 const AppRoutes = (props) => {
-  const { films, user, setUser } = props;
-  console.log(user, props.user);
+  const user = useSelector(getUser);
 
   const authenticated = !!user;
 
@@ -15,9 +16,9 @@ const AppRoutes = (props) => {
     <div>
       <Switch>
         <Redirect exact from="/" to="/films" />
-        <Route exact path="/login" render={() => <Login authenticated={authenticated} setUser={setUser} user={user} />} />
-        <ProtectedRoutes authenticated={authenticated} exact path="/films" render={() => <Films films={films} />} />
-        <ProtectedRoutes authenticated={authenticated} exact path="/films/:filmId" render={() => <FilmDetails films={films} />} />
+        <Route exact path="/login" render={() => <Login />} />
+        <ProtectedRoutes authenticated={authenticated} exact path="/films" render={() => <Films />} />
+        <ProtectedRoutes authenticated={authenticated} exact path="/films/:filmId" render={() => <FilmDetails />} />
         <Route path="*" component={Page404} />
       </Switch>
     </div>

@@ -1,9 +1,13 @@
 import React from "react";
+import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
 import Characters from "../Characters/Characters";
 
 const Film = (props) => {
   const history = useHistory();
+
+  const { film, showDetails } = props;
+  console.log(film);
 
   const goToDetalis = () => {
     const {
@@ -16,11 +20,15 @@ const Film = (props) => {
     history.goBack();
   };
 
-  const { film, showDetails } = props;
+  const deleteFilm = () => {
+    console.log(22);
+  };
 
   return (
     <li>
-      <span>{film.name}</span>
+      <span>
+        {film.name} <button onClick={deleteFilm}>X</button>
+      </span>
       {!showDetails && <button onClick={goToDetalis}> MORE</button>}
       {showDetails && (
         <>
@@ -37,4 +45,8 @@ const Film = (props) => {
 Film.defaultProps = {
   showDetails: false,
 };
-export default Film;
+
+const mapStateToProps = (state) => {
+  return { films: state.films.data };
+};
+export default connect(mapStateToProps)(Film);

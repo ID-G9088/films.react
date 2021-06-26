@@ -1,10 +1,15 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { connect } from "react-redux";
+import { setUser } from "../../store/actions";
+import { getUser } from "../../store/selectors";
 
 const Header = (props) => {
-  const { user, setUser } = props;
+  const dispatch = useDispatch();
+  const user = useSelector(getUser);
 
   const logOut = () => {
-    setUser(null);
+    dispatch(setUser(null));
     localStorage.removeItem("user");
   };
 
@@ -20,4 +25,16 @@ const Header = (props) => {
   );
 };
 
-export default Header;
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setUser: (data) => dispatch(setUser(data)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

@@ -1,12 +1,14 @@
 import axios from "axios";
 import React, { Component, useEffect, useState } from "react";
+import { connect } from "react-redux";
 import Loading from "../Loading/Loading";
 
 const Characters = (props) => {
-  const [charactersList, setCharactersList] = useState([]);
-  const [isLoading, setLoading] = useState(true);
+  // const [charactersList, setCharactersList] = useState([]);
+  // const [isLoading, setLoading] = useState(true);
 
-  const { characters } = props;
+  const { characters, charactersList, isLoading, setCharactersList, setCharactersListLoading } = props;
+  console.log(charactersList);
 
   useEffect(() => {
     const request = characters.map((el) => axios(el));
@@ -14,7 +16,7 @@ const Characters = (props) => {
       console.log(res);
       const newArray = res.map((item) => item.data);
       setCharactersList(newArray);
-      setLoading(false);
+      setCharactersListLoading(false);
     });
   }, []);
 
@@ -28,4 +30,18 @@ const Characters = (props) => {
   );
 };
 
-export default Characters;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setCharactersList: (data) => dispatch({ type: "SET_CHARACTERS", payload: data }),
+    setCharactersListLoading: (data) => dispatch({ type: "SET_CHARACTERS_LOADING", payload: data }),
+  };
+};
+
+const mapStateToProps = (state) => {
+  return {
+    charactersList: state.characters.data,
+    isLoading: state.characters.isLoading,
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Characters);

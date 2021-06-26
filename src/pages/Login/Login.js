@@ -1,9 +1,16 @@
 import React, { useRef } from "react";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
+import { setUser } from "../../store/actions";
+import { getUser } from "../../store/selectors";
 
 const Login = (props) => {
   const login = useRef();
   const password = useRef();
+
+  const dispatch = useDispatch();
+  const user = useSelector(getUser);
+  const authenticated = !!user;
 
   const setLocalStorage = (user) => {
     localStorage.setItem("user", JSON.stringify(user));
@@ -15,14 +22,12 @@ const Login = (props) => {
     const newPassword = password.current.value;
     const user = { login: newLogin, password: newPassword };
 
-    props.setUser({
-      user: user,
-    });
+    dispatch(setUser(user));
 
     setLocalStorage(user);
   };
 
-  if (props.authenticated) {
+  if (authenticated) {
     return <Redirect to="/films/" />;
   }
 

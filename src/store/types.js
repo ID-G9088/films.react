@@ -1,0 +1,7 @@
+export const SET_USER = "SET_USER";
+export const SET_FILMS_LOADING = "SET_FILMS_LOADING";
+export const SET_FILM_LOADING = "SET_FILM_LOADING";
+export const SET_FILMS = "SET_FILMS";
+export const SET_FILM = "SET_FILM";
+export const SET_CHARACTERS = "SET_CHARACTERS";
+export const SET_CHARACTERS_LOADING = "SET_CHARACTERS_LOADING";
