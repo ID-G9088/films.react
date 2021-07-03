@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import Loading from "./Components/Loading/Loading";
 import axios from "axios";
 import Header from "./Components/Header/Header";
+import ThemeProvider from "./Components/ThemeProvider.js/ThemeProvider";
+import SelectTheme from "./Components/SelectTheme/SelectTheme";
 
 const App = () => {
   const [films, setFilms] = useState([]);
@@ -26,10 +28,13 @@ const App = () => {
   }
 
   return (
-    <div className="App">
-      <Header user={user} setUser={setUser} />
-      <AppRoutes user={user} setUser={setUser} films={films} />
-    </div>
+    <ThemeProvider>
+      <div className="App">
+        <Header user={user} setUser={setUser} />
+        <SelectTheme />
+        <AppRoutes user={user} setUser={setUser} films={films} />
+      </div>
+    </ThemeProvider>
   );
 };
 
